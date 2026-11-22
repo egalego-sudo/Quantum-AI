@@ -64,7 +64,7 @@ jobs:
             --connect-timeout 10 --max-time 30 \
             "https://astraquantum-ai.onrender.com/health" \
             --output "$response"
-          node -e 'const fs=require("node:fs"); const data=JSON.parse(fs.readFileSync(process.argv[1],"utf8")); if(data.ok!==true || data.service!=="QUANTUM AI backend") process.exit(1); process.stdout.write("Backend health endpoint returned the expected service identity.\\n");' "$response"
+          node -e 'const fs=require("node:fs"); const data=JSON.parse(fs.readFileSync(process.argv[1],"utf8")); if(data.ok!==true || data.service!=="QUANTUM AI backend") process.exit(1); process.stdout.write("Backend health endpoint returned the expected service identity.\n");' "$response"
 
       - name: Host native patch parser smoke tests
         shell: bash
