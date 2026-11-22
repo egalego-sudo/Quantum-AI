@@ -150,41 +150,7 @@ jobs:
           disable-animations: true
           ndk: 29.0.14206865
           cmake: 3.31.6
-          script: |
-            set -euo pipefail
-            adb wait-for-device
-            adb devices -l
-            device_state="$(adb -s emulator-5554 get-state)"
-            if [ "$device_state" != "device" ]; then
-              echo "Expected emulator-5554 state=device, got: $device_state" >&2
-              adb devices -l >&2
-              exit 1
-            fi
-            boot_completed=""
-            for attempt in $(seq 1 60); do
-              boot_completed="$(adb -s emulator-5554 shell getprop sys.boot_completed 2>/dev/null || true)"
-              if [ "$boot_completed" = "1" ]; then break; fi
-              sleep 2
-            done
-            if [ "$boot_completed" != "1" ]; then
-              echo "Emulator did not report sys.boot_completed=1." >&2
-              adb devices -l >&2
-              adb -s emulator-5554 shell getprop >&2 || true
-              exit 1
-            fi
-            echo "Emulator ready: ADB state=$device_state, sys.boot_completed=$boot_completed"
-            set +e
-            gradle --no-daemon connectedDebugAndroidTest --stacktrace
-            test_status=$?
-            set -e
-            if [ "$test_status" -ne 0 ]; then
-              echo "===== Android instrumentation failure logcat ====="
-              adb logcat -d -v threadtime > "$RUNNER_TEMP/quantum-emulator-logcat.txt" || true
-              adb logcat -d -v threadtime -s AndroidRuntime:E ActivityManager:E Instrumentation:E TestRunner:E '*:S' || true
-              adb shell dumpsys activity processes > "$RUNNER_TEMP/quantum-emulator-processes.txt" || true
-              echo "Diagnostic files saved under RUNNER_TEMP for artifact upload."
-            fi
-            exit "$test_status"
+          script: bash .github/scripts/run-emulator-tests.sh
 
       - name: Diagnose emulator startup failure
         if: failure()
