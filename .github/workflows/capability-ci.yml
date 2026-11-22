@@ -14,6 +14,7 @@ on:
       - ".github/workflows/capability-ci.yml"
       - ".github/workflows/android-build.yml"
       - ".github/workflows/knowledge-base-tests.yml"
+      - ".github/scripts/**"
 
 permissions:
   contents: read
@@ -99,4 +100,52 @@ jobs:
           name: QUANTUM-AI-PR-debug-apk
           path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
+          retention-days: 14
+
+  android-emulator:
+    name: Android emulator instrumentation tests
+    needs: validate
+    runs-on: macos-15-intel
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+
+      - name: Run Android emulator core-flow and memory persistence tests
+        timeout-minutes: 30
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_2
+          emulator-boot-timeout: 600
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          disable-animations: true
+          ndk: 29.0.14206865
+          cmake: 3.31.6
+          script: bash .github/scripts/run-emulator-tests.sh
+
+      - name: Upload emulator crash diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: QUANTUM-AI-PR-emulator-diagnostics
+          path: |
+            ${{ runner.temp }}/quantum-emulator-logcat.txt
+            ${{ runner.temp }}/quantum-emulator-processes.txt
+          if-no-files-found: warn
           retention-days: 14
