@@ -2,6 +2,7 @@ package com.bittupandit.astraquantumai
 
 import androidx.compose.ui.test.assertIsOff
 import androidx.compose.ui.test.hasSetTextAction
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.isToggleable
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
@@ -90,9 +91,9 @@ class MainActivityCoreFlowTest {
         // Project notes are private local data and should survive Activity recreation too.
         composeRule.onNodeWithText("Projects", useUnmergedTree = true).performClick()
         composeRule.onNodeWithText("PROJECT WORKSPACE").fetchSemanticsNode()
-        composeRule.onAllNodes(hasSetTextAction()).onFirst().performTextInput("QUANTUM-AI project persistence check")
+        composeRule.onNodeWithTag("project_input").performTextInput("QUANTUM-AI project persistence check")
         composeRule.onNodeWithText("प्रोजेक्ट / नोट सेव करें").performClick()
-        composeRule.onNodeWithText("QUANTUM-AI project persistence check", substring = true).fetchSemanticsNode()
+        composeRule.waitUntil(timeoutMillis = 5_000) { composeRule.onAllNodesWithText("QUANTUM-AI project persistence check", substring = true).fetchSemanticsNodes().isNotEmpty() }
 
         composeRule.activityRule.scenario.recreate()
         composeRule.waitUntil(timeoutMillis = 15_000) {
