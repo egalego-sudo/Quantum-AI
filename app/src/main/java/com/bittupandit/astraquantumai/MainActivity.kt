@@ -368,7 +368,7 @@ private fun AstraApp(
                 }
             }
             Spacer(Modifier.height(14.dp))
-            Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+            Row(Modifier.fillMaxWidth().testTag("main_navigation").horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
                 listOf("Home", "AI Chat", "Benchmark", "App Builder", "Website Builder", "Quantum", "Cores", "Science Lab", "Calculator", "Science QA", "Offline AI", "Research", "Action", "Memory", "Voice", "Files", "Projects", "Updates", "Settings").forEach { item ->
                     val selected = page == item
                     Surface(
