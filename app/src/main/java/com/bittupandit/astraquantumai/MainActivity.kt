@@ -207,7 +207,7 @@ class MainActivity : FragmentActivity() {
 }
 
 
-private fun securePreferences(context: Context): SharedPreferences {
+internal fun securePreferences(context: Context): SharedPreferences {
     val masterKey = MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build()
     val secure = EncryptedSharedPreferences.create(context, "quantum_private_secure", masterKey,
         EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
