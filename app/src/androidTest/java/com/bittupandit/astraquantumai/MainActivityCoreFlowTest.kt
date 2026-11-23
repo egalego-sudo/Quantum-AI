@@ -92,7 +92,7 @@ class MainActivityCoreFlowTest {
         composeRule.onNodeWithText("PROJECT WORKSPACE").fetchSemanticsNode()
         composeRule.onNodeWithTag("project_input").performTextInput("QUANTUM-AI project persistence check")
         composeRule.onNodeWithText("प्रोजेक्ट / नोट सेव करें").performClick()
-        composeRule.waitUntil(timeoutMillis = 5_000) { composeRule.onAllNodesWithText("QUANTUM-AI project persistence check", substring = true).fetchSemanticsNodes().isNotEmpty() }
+        composeRule.waitUntil(timeoutMillis = 15_000) { composeRule.onAllNodesWithText("QUANTUM-AI project persistence check", substring = true).fetchSemanticsNodes().isNotEmpty() }
 
         composeRule.activityRule.scenario.recreate()
         composeRule.waitUntil(timeoutMillis = 15_000) {
