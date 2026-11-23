@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -345,7 +346,7 @@ private fun AstraApp(
     }
     fun addProject(value: String) {
         projects = (projects + if (projects.isBlank()) "" else "\n" + "• " + value).trim()
-        prefs.edit().putString("projects", projects).apply()
+        prefs.edit().putString("projects", projects).commit()
         projectInput = ""
     }
 
@@ -367,7 +368,7 @@ private fun AstraApp(
                 }
             }
             Spacer(Modifier.height(14.dp))
-            Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+            Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).testTag("main_navigation"), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
                 listOf("Home", "AI Chat", "Benchmark", "App Builder", "Website Builder", "Quantum", "Cores", "Science Lab", "Calculator", "Science QA", "Offline AI", "Research", "Action", "Memory", "Voice", "Files", "Projects", "Updates", "Settings").forEach { item ->
                     val selected = page == item
                     Surface(
@@ -585,7 +586,7 @@ private fun AstraApp(
                     LazyColumn(Modifier.weight(1f).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp), contentPadding = PaddingValues(vertical = 10.dp)) {
                         items(chat) { item ->
                             val isAi = item.from == "QUANTUM AI" || item.from == "ASTRA"
-                            Row(Modifier.fillMaxWidth(), horizontalArrangement = if (isAi) Arrangement.Start else Arrangement.End) {
+                            Row(Modifier.fillMaxWidth().testTag("chat_message_${item.text}"), horizontalArrangement = if (isAi) Arrangement.Start else Arrangement.End) {
                                 if (isAi) {
                                     Box(Modifier.size(30.dp).clip(CircleShape).background(Color(0xFF444444)), contentAlignment = Alignment.Center) {
                                         Text("Q", color = white, fontWeight = FontWeight.Bold, fontSize = 14.sp)
@@ -1123,7 +1124,7 @@ private fun AstraApp(
                 Text("Creator by Bittu Pandit", color = mint, fontSize = 11.sp, fontWeight = FontWeight.Bold)
             }
             "Projects" -> SimplePage("PROJECT WORKSPACE", "अपने प्रोजेक्ट के नोट्स सेव करें। ये इसी फोन में रहेंगे और ऐप दोबारा खोलने पर वापस मिलेंगे।") {
-                OutlinedTextField(projectInput, { projectInput = it }, Modifier.fillMaxWidth(), label = { Text("नया प्रोजेक्ट या नोट लिखें") }, minLines = 3)
+                OutlinedTextField(projectInput, { projectInput = it }, Modifier.fillMaxWidth().testTag("project_input"), label = { Text("नया प्रोजेक्ट या नोट लिखें") }, minLines = 3)
                 Button(enabled = projectInput.isNotBlank(), onClick = { addProject(projectInput) }, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(containerColor = white, contentColor = ink)) { Text("प्रोजेक्ट / नोट सेव करें") }
                 Text("सेव की गई सामग्री", color = mint, fontWeight = FontWeight.Bold, fontSize = 12.sp)
                 SelectionContainer { Text(projects.ifBlank { "अभी कोई प्रोजेक्ट नोट नहीं।" }, color = white, lineHeight = 21.sp) }
