@@ -586,7 +586,7 @@ private fun AstraApp(
                     LazyColumn(Modifier.weight(1f).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp), contentPadding = PaddingValues(vertical = 10.dp)) {
                         items(chat) { item ->
                             val isAi = item.from == "QUANTUM AI" || item.from == "ASTRA"
-                            Row(Modifier.fillMaxWidth(), horizontalArrangement = if (isAi) Arrangement.Start else Arrangement.End) {
+                            Row(Modifier.fillMaxWidth().testTag("chat_message_${item.text}"), horizontalArrangement = if (isAi) Arrangement.Start else Arrangement.End) {
                                 if (isAi) {
                                     Box(Modifier.size(30.dp).clip(CircleShape).background(Color(0xFF444444)), contentAlignment = Alignment.Center) {
                                         Text("Q", color = white, fontWeight = FontWeight.Bold, fontSize = 14.sp)
